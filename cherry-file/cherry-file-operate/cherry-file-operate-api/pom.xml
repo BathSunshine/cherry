@@ -3,16 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.github</groupId>
-		<artifactId>cherry-framework</artifactId>
+		<artifactId>cherry-file-operate</artifactId>
 		<version>1.0.0.RELEASE</version>
 	</parent>
-	<artifactId>cherry-common</artifactId>
+	<artifactId>cherry-file-operate-api</artifactId>
+
 	<dependencies>
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
+			<groupId>com.github</groupId>
+			<artifactId>cherry-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
-	
-
 </project>

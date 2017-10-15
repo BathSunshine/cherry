@@ -3,16 +3,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.github</groupId>
-		<artifactId>cherry-framework</artifactId>
+		<artifactId>cherry-file-client</artifactId>
 		<version>1.0.0.RELEASE</version>
 	</parent>
-	<artifactId>cherry-common</artifactId>
+	<artifactId>cherry-file-client-sftp</artifactId>
+
 	<dependencies>
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
+			<groupId>com.github</groupId>
+			<artifactId>cherry-file-client-api</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
 		</dependency>
 	</dependencies>
-	
-
 </project>

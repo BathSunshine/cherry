@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github</groupId>
+    <artifactId>cherry-framework</artifactId>
+    <version>1.0.0.RELEASE</version>
+  </parent>
+  <artifactId>cherry-file</artifactId>
+  <packaging>pom</packaging>
+ 
+  <modules>
+  	<module>cherry-file-client</module>
+  	<module>cherry-file-operate</module>
+  </modules>
+</project>

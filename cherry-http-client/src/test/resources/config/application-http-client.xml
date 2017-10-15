@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="false">
+	
+	<bean id="clientConfiguration" class="com.github.cherry.http.client.ClientConfiguration">
+		<property name="maxConnections" value="50"/>
+		<!-- u can add config here -->
+	</bean>
+	
+	<bean id="serviceClient" class="com.github.cherry.http.client.common.client.DefaultServiceClient" destroy-method="shutdown">
+		<constructor-arg index="0" ref="clientConfiguration"/>
+	</bean>
+	
+	<!-- 
+	
+	<bean id="serviceClient" class="com.github.cherry.http.client.common.client.TimeoutServiceClient" destroy-method="shutdown">
+		<constructor-arg index="0" ref="clientConfiguration"/>
+	</bean>
+	
+	 -->
+	 
+	 
+	
+</beans>
