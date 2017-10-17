@@ -6,4 +6,10 @@
     <version>1.0.0.RELEASE</version>
   </parent>
   <artifactId>cherry-signature-api</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.github</groupId>
+  		<artifactId>cherry-common</artifactId>
+  	</dependency>
+  </dependencies>
 </project>
