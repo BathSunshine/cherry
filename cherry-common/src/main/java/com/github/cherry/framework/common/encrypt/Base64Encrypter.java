@@ -21,6 +21,17 @@ public final class Base64Encrypter {
 
     /**
      * 
+     * Base64
+     * 
+     * @param source
+     * @return
+     */
+    public static String toBase64(byte[] source) {
+        return Base64.encodeBase64String(source);
+    }
+
+    /**
+     * 
      * 解码Base64 <功能详细描述>
      * 
      * @param base64
@@ -33,6 +44,17 @@ public final class Base64Encrypter {
         } catch (UnsupportedEncodingException e) {
             throw new AlgorithmException("decode error", e);
         }
+    }
+
+    /**
+     * 
+     * 解码Base64 <功能详细描述>
+     * 
+     * @param base64
+     * @return
+     */
+    public static byte[] fromBase64(byte[] base64) {
+        return Base64.decodeBase64(base64);
     }
 
     /**

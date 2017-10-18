@@ -2,6 +2,7 @@ package com.github.cherry.serializer.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.cherry.serializer.DeserializerException;
 import com.github.cherry.serializer.Serializer;
 import com.github.cherry.serializer.SerializerException;
 import com.github.cherry.serializer.SerializerStrategy;
@@ -72,7 +73,7 @@ public class JsonSerializer implements Serializer {
         try {
             return objectMapper.readValue(bytes, new TypeReferenceAdapter<T>(reference));
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 
@@ -84,7 +85,7 @@ public class JsonSerializer implements Serializer {
         try {
             return objectMapper.readValue(str, clazz);
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 
@@ -97,7 +98,7 @@ public class JsonSerializer implements Serializer {
         try {
             return objectMapper.readValue(str, new TypeReferenceAdapter<T>(reference));
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 

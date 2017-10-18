@@ -14,11 +14,11 @@ package com.github.cherry.serializer.xml.jackson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.github.cherry.serializer.DeserializerException;
 import com.github.cherry.serializer.Serializer;
 import com.github.cherry.serializer.SerializerException;
 import com.github.cherry.serializer.SerializerStrategy;
 import com.github.cherry.serializer.SerializerTypeReference;
-import com.github.cherry.serializer.xml.jackson.TypeReferenceAdapter;
 
 /**
  * <p>also support json annotation</p>
@@ -83,7 +83,7 @@ public class XmlSerializer implements Serializer {
         try {
             return objectMapper.readValue(bytes, new TypeReferenceAdapter<T>(reference));
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 
@@ -95,7 +95,7 @@ public class XmlSerializer implements Serializer {
         try {
             return objectMapper.readValue(str, clazz);
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 
@@ -108,7 +108,7 @@ public class XmlSerializer implements Serializer {
         try {
             return objectMapper.readValue(str, new TypeReferenceAdapter<T>(reference));
         } catch (Exception e) {
-            throw new SerializerException("can not deserializer string to obj", e);
+            throw new DeserializerException("can not deserializer string to obj", e);
         }
     }
 

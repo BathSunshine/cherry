@@ -101,6 +101,19 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+
+
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
@@ -140,7 +153,7 @@
 		<commons.logging.version>1.2</commons.logging.version>
 		<commons.io.version>2.5</commons.io.version>
 		<redisson.version>2.10.3</redisson.version>
-
+		<poi.version>3.15</poi.version>
 		<junit.version>4.10</junit.version>
 
 		<jdk.version>1.7</jdk.version>

@@ -1,7 +1,5 @@
 package com.github.cherry.signature.rsa.test;
 
-import java.security.SignatureException;
-
 import org.junit.Test;
 
 import com.github.cherry.signature.rsa.RsaSignature;
@@ -17,22 +15,18 @@ public class RsaSignatureTest {
         String keyStorePath = "test.jks";
         String password = "password";
         String signResult;
-        
+
         RsaSignatureConfiguration config = new RsaSignatureConfiguration();
         config.setJksInputStream(this.getClass().getClassLoader().getResourceAsStream(keyStorePath));
         config.setPassword(password);
-        
-        try {
-            RsaSignature rsaSignature = new RsaSignature(config);
-            rsaSignature.init();
-            
-            String data = "testsigndata";
-            String salt = "456";
-            signResult = rsaSignature.sign(salt, data);
-            Assert.assertNotNull(signResult);
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
+
+        RsaSignature rsaSignature = new RsaSignature(config);
+        rsaSignature.init();
+
+        String data = "testsigndata";
+        String salt = "456";
+        signResult = rsaSignature.sign(salt, data);
+        Assert.assertNotNull(signResult);
 
     }
 
@@ -45,22 +39,17 @@ public class RsaSignatureTest {
         String password = "password";
         String data = "testsigndata";
         String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDB8dYv7yj2ILc1QwI9m3znkysxiT5Z/0do355NcZrCJOpnZ9g2IctUtiotMafxclzuMCSeXXqLeI6jpRhBMoPsjMp3yRiOi1O339hZljtvPCxo3OthXAUsZoASFbZCxCQugL7rlGzj19t8u/hROLKwP058sBAuzN09DXT0zIKKJwIDAQAB";
-        
+
         RsaSignatureConfiguration config = new RsaSignatureConfiguration();
         config.setJksInputStream(this.getClass().getClassLoader().getResourceAsStream(keyStorePath));
         config.setPassword(password);
-        
-        try {
-            
-            RsaSignature rsaSignature = new RsaSignature(config);
-            rsaSignature.init();
-            
-            boolean result = rsaSignature.verifySignature(publicKey, data, signResultTrue);
-            Assert.assertTrue(result);
-            result = rsaSignature.verifySignature(publicKey, data, signResultFalse);
-            Assert.assertFalse(result);
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
+
+        RsaSignature rsaSignature = new RsaSignature(config);
+        rsaSignature.init();
+
+        boolean result = rsaSignature.verifySignature(publicKey, data, signResultTrue);
+        Assert.assertTrue(result);
+        result = rsaSignature.verifySignature(publicKey, data, signResultFalse);
+        Assert.assertFalse(result);
     }
 }
