@@ -5,10 +5,14 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd"
 	default-lazy-init="false">
 
-	<bean id="rsaSignature" class=" com.github.cherry.signature.rsa.RsaSignature">
-		<constructor-arg name="keyStorePath" value="test.jks"></constructor-arg>
-		<constructor-arg name="password" value="password"></constructor-arg>
-		<constructor-arg name="gatewayAlias" value=""></constructor-arg>
-	</bean>
+	<bean id="rsaSignatureConfiguration"
+        class=" com.github.cherry.signature.rsa.RsaSignatureConfiguration">
+        <property name="password" value="password"></property>
+        <property name="jksInputStream" value="classpath:test.jks"></property>
+    </bean>
+
+    <bean id="rsaSignature" class=" com.github.cherry.signature.rsa.RsaSignature" init-method="init">
+        <constructor-arg name="config" ref="rsaSignatureConfiguration"></constructor-arg>
+    </bean>
 
 </beans>

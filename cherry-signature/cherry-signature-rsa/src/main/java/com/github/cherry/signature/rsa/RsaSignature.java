@@ -31,69 +31,53 @@ import com.github.cherry.signature.SignatureService;
  */
 public class RsaSignature implements SignatureService {
     public static Log LOG = LogFactory.getLog(RsaSignature.class);
-    private String keyStorePath;
-    private String password;
-    private String gatewayAlias;
 
-    private PrivateKey gatewayPrivateKey;
+    private RsaSignatureConfiguration config;
 
-    private PublicKey gatewayPublicKey;
-
-    /**
-     * Creates a new instance of RsaSignature.
-     *
-     * @param keyStorePath 证书路径
-     * @param password 私钥密码
-     * @param gatewayAlias 别名
-     * @throws SignatureException
-     */
-    public RsaSignature(String keyStorePath, String password, String gatewayAlias) throws SignatureException {
-        super();
-        this.keyStorePath = keyStorePath;
-        this.password = password;
-        this.gatewayAlias = gatewayAlias;
-        init();
+    public RsaSignature(RsaSignatureConfiguration config) {
+        this.config = config;
     }
 
-    /**
-     * Creates a new instance of RsaSignature.
-     *
-     * @param keyStorePath 证书路径
-     * @param password 私钥密码
-     * @throws SignatureException
-     */
-    public RsaSignature(String keyStorePath, String password) throws SignatureException {
-        this(keyStorePath, password, null);
-    }
-
-    protected void init() throws SignatureException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(keyStorePath);
+    public void init() throws SignatureException {
+        if (config == null) {
+            String errorMsg = "初始化异常,config属性未配置";
+            LOG.error(errorMsg);
+            throw new SignatureException(errorMsg);
+        }
+        if (config.getJksInputStream() == null) {
+            String errorMsg = "初始化异常,config.InputStream属性未配置";
+            LOG.error(errorMsg);
+            throw new SignatureException(errorMsg);
+        }
+        InputStream is = config.getJksInputStream();
         try {
             KeyStore jks = KeyStore.getInstance(KeyStore.getDefaultType());
-            jks.load(is, password.toCharArray());
-            if (StringUtils.isEmpty(gatewayAlias)) {
+            jks.load(is, config.getPassword().toCharArray());
+            if (StringUtils.isEmpty(config.getGatewayAlias())) {
                 Enumeration<String> en = jks.aliases();
                 for (; en.hasMoreElements(); en.nextElement()) {
                     String aliase = en.nextElement();
                     if (jks.isKeyEntry(aliase)) {
-                        gatewayAlias = aliase;
+                        config.setGatewayAlias(aliase);
                         break;
                     }
                 }
             }
 
-            if (!jks.isKeyEntry(gatewayAlias)) {
-                LOG.error("parameter [gatewayAlias] is not key entry!");
+            if (!jks.isKeyEntry(config.getGatewayAlias())) {
+                LOG.error("初始化异常,parameter [gatewayAlias] is not key entry!");
             }
 
-            gatewayPrivateKey = (PrivateKey) jks.getKey(gatewayAlias, password.toCharArray());
+            PrivateKey gatewayPrivateKey = (PrivateKey) jks.getKey(config.getGatewayAlias(),
+                    config.getPassword().toCharArray());
+            this.gatewayPrivateKey = gatewayPrivateKey;
             String str = Base64.encodeBase64String(gatewayPrivateKey.getEncoded());
-            LOG.debug("gatewayPrivateKey base64:" + str);
+            LOG.debug(config.getGatewayAlias() + " privateKey base64:" + str);
 
-            Certificate cert = jks.getCertificate(gatewayAlias);
-            gatewayPublicKey = cert.getPublicKey();
+            Certificate cert = jks.getCertificate(config.getGatewayAlias());
+            PublicKey gatewayPublicKey = cert.getPublicKey();
             str = Base64.encodeBase64String(gatewayPublicKey.getEncoded());
-            LOG.debug("gatewayPublicKey base64:" + str);
+            LOG.debug(config.getGatewayAlias() + "publicKey base64:" + str);
         } catch (Exception e) {
             LOG.error(e);
             throw new SignatureException("初始化异常", e);
@@ -115,13 +99,13 @@ public class RsaSignature implements SignatureService {
     @Override
     public String sign(String salt, String data) throws SignatureException {
         try {
-            Signature signature = Signature.getInstance("SHA1WithRSA");
+            Signature signature = Signature.getInstance(config.getSignatureInstanceName());
             SecureRandom random = null;
             if (salt != null) {
                 random = new SecureRandom(salt.getBytes());
             }
             signature.initSign(gatewayPrivateKey, random);
-            signature.update(data.getBytes("UTF-8"));
+            signature.update(data.getBytes(config.getSignatureEncode()));
             return Base64.encodeBase64String(signature.sign());
         } catch (Exception e) {
             LOG.error(e);
@@ -134,32 +118,13 @@ public class RsaSignature implements SignatureService {
      * java.lang.String)
      */
     @Override
-    public boolean verifySignature(String key, String data, String sign) throws SignatureException {
+    public boolean verifySignature(String publicKey, String data, String sign) throws SignatureException {
         try {
-            PublicKey publicKey = string2PublicKey(key);
-            Signature signature = Signature.getInstance("SHA1WithRSA");
-            signature.initVerify(publicKey);
-            signature.update(data.getBytes("UTF-8"));
-            return signature.verify(Base64.decodeBase64(sign.getBytes("UTF-8")));
-        } catch (Exception e) {
-            LOG.error(e);
-            throw new SignatureException("验签失败", e);
-        }
-    }
-
-    /**
-     * 对象初始化时设置，若未设置，将自动从jks文件中读取公钥
-     * 
-     * @see com.github.cherry.signature.SignatureService#verifySignature(java.lang.String, java.lang.String)
-     */
-    @Override
-    public boolean verifySignature(String data, String sign) throws SignatureException {
-        try {
-            PublicKey publicKey = getGatewayPublicKey();
-            Signature signature = Signature.getInstance("SHA1WithRSA");
-            signature.initVerify(publicKey);
-            signature.update(data.getBytes("UTF-8"));
-            return signature.verify(Base64.decodeBase64(sign.getBytes("UTF-8")));
+            PublicKey key = string2PublicKey(publicKey);
+            Signature signature = Signature.getInstance(config.getSignatureInstanceName());
+            signature.initVerify(key);
+            signature.update(data.getBytes(config.getSignatureEncode()));
+            return signature.verify(Base64.decodeBase64(sign.getBytes(config.getSignatureEncode())));
         } catch (Exception e) {
             LOG.error(e);
             throw new SignatureException("验签失败", e);
@@ -168,40 +133,22 @@ public class RsaSignature implements SignatureService {
 
     private PublicKey string2PublicKey(String key)
             throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.decodeBase64(key.getBytes("UTF-8")));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(
+                Base64.decodeBase64(key.getBytes(config.getSignatureEncode())));
+        KeyFactory keyFactory = KeyFactory.getInstance(config.getKeyFactoryName());
         return keyFactory.generatePublic(x509KeySpec);
     }
 
-    public PublicKey getGatewayPublicKey() {
-        return gatewayPublicKey;
+    /**
+     * gatewayPrivateKey:私钥
+     */
+    private PrivateKey gatewayPrivateKey;
+
+    public RsaSignatureConfiguration getConfig() {
+        return config;
     }
 
-    public String publicKey2String(PublicKey key) {
-        return Base64.encodeBase64String(key.getEncoded());
-    }
-
-    public String getKeyStorePath() {
-        return keyStorePath;
-    }
-
-    public void setKeyStorePath(String keyStorePath) {
-        this.keyStorePath = keyStorePath;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getGatewayAlias() {
-        return gatewayAlias;
-    }
-
-    public void setGatewayAlias(String gatewayAlias) {
-        this.gatewayAlias = gatewayAlias;
+    public void setConfig(RsaSignatureConfiguration config) {
+        this.config = config;
     }
 }

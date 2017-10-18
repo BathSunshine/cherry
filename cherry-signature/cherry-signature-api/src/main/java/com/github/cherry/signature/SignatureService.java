@@ -30,15 +30,4 @@ public interface SignatureService {
      * @return 验签是否成功
      */
     boolean verifySignature(String publicKey, String data, String sign) throws SignatureException;
-
-    /**
-     * 验签
-     * <p>
-     * 初始化时设置公钥
-     * 
-     * @param data 数据
-     * @param sign 签名
-     * @return 验签是否成功
-     */
-    boolean verifySignature(String data, String sign) throws SignatureException;
 }
