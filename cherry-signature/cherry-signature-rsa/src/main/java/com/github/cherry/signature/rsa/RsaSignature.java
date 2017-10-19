@@ -33,10 +33,6 @@ import com.github.cherry.signature.exception.SignatureException;
 public class RsaSignature implements SignatureService {
     private static Log LOG = LogFactory.getLog(RsaSignature.class);
 
-    private static final String KEY_FACTORY_NAME_DEFAULT = "RSA";
-
-    private static final String SIGNATURE_INSTANCE_NAME_DEFAULT = "SHA1WithRSA";
-
     private PrivateKey gatewayPrivateKey;
 
     private RsaSignatureConfiguration config;
@@ -44,7 +40,7 @@ public class RsaSignature implements SignatureService {
     public RsaSignature(RsaSignatureConfiguration config) {
         Assert.notNull(config, "config cannot be null");
         Assert.notNull(config.getJksInputStream(), "jks file cannot found");
-        Assert.notNull(config.getGatewayAlias(), "parameter [gatewayAlias] is not key entry!");
+        
         this.config = config;
     }
 
@@ -65,6 +61,8 @@ public class RsaSignature implements SignatureService {
                 }
             }
 
+            Assert.notNull(config.getGatewayAlias(), "parameter [gatewayAlias] is not key entry!");
+            
             this.gatewayPrivateKey = (PrivateKey) jks.getKey(config.getGatewayAlias(), config.getPassword()
                     .toCharArray());
 
@@ -83,7 +81,7 @@ public class RsaSignature implements SignatureService {
     @Override
     public String sign(String salt, String data) throws SignatureException {
         try {
-            Signature signature = Signature.getInstance(SIGNATURE_INSTANCE_NAME_DEFAULT);
+            Signature signature = Signature.getInstance(config.getSignatureInstanceName());
             SecureRandom random = null;
             if (salt != null) {
                 random = new SecureRandom(salt.getBytes());
@@ -105,7 +103,7 @@ public class RsaSignature implements SignatureService {
     public boolean verifySignature(String publicKey, String data, String sign) throws SignatureException {
         try {
             PublicKey key = string2PublicKey(publicKey);
-            Signature signature = Signature.getInstance(SIGNATURE_INSTANCE_NAME_DEFAULT);
+            Signature signature = Signature.getInstance(config.getSignatureInstanceName());
             signature.initVerify(key);
             signature.update(data.getBytes(config.getSignatureEncode()));
             return signature.verify(Base64Encrypter.fromBase64(sign.getBytes(config.getSignatureEncode())));
@@ -119,7 +117,7 @@ public class RsaSignature implements SignatureService {
             InvalidKeySpecException {
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.decodeBase64(key.getBytes(config
                 .getSignatureEncode())));
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_FACTORY_NAME_DEFAULT);
+        KeyFactory keyFactory = KeyFactory.getInstance(config.getKeyFactoryName());
         return keyFactory.generatePublic(x509KeySpec);
     }
 

@@ -2,8 +2,10 @@ package com.github.cherry.signature.rsa.test;
 
 import org.junit.Test;
 
+import com.github.cherry.signature.User;
 import com.github.cherry.signature.rsa.RsaSignature;
 import com.github.cherry.signature.rsa.RsaSignatureConfiguration;
+import com.github.cherry.signature.utils.SignatureUtils;
 
 import junit.framework.Assert;
 
@@ -27,7 +29,18 @@ public class RsaSignatureTest {
         String salt = "456";
         signResult = rsaSignature.sign(salt, data);
         Assert.assertNotNull(signResult);
-
+        
+        User user = new User();
+        String[] location = new String[]{"jianye","nanjin","jiangsu","zhongguo"};
+        user.setLocation(location);
+        user.setPassword("123456");
+        user.setUserName("张三");
+        
+        String data2 = SignatureUtils.buildData(SignatureUtils.buildParamterMap(user));
+        String sign = rsaSignature.sign("123", data2);
+        System.out.println(sign);
+        String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDB8dYv7yj2ILc1QwI9m3znkysxiT5Z/0do355NcZrCJOpnZ9g2IctUtiotMafxclzuMCSeXXqLeI6jpRhBMoPsjMp3yRiOi1O339hZljtvPCxo3OthXAUsZoASFbZCxCQugL7rlGzj19t8u/hROLKwP058sBAuzN09DXT0zIKKJwIDAQAB";
+        System.out.println(rsaSignature.verifySignature(publicKey, data2, sign));
     }
 
     @Test

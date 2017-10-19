@@ -17,9 +17,28 @@ public class RsaSignatureConfiguration {
     private String gatewayAlias;
 
     /**
-     * SIGNATURE_ENCODE_DEFAULT:字符编码默认值
+     * SIGNATURE_ENCODE_DEFAULT:character encode default value
      */
     private static final String SIGNATURE_ENCODE_DEFAULT = "UTF-8";
+
+    /**
+     * KEY_FACTORY_NAME_DEFAULT:KeyFactory algorithm default value.
+     */
+    private static final String KEY_FACTORY_NAME_DEFAULT = "RSA";
+
+    /**
+     * SIGNATURE_INSTANCE_NAME_DEFAULT:signature algorithm default value.
+     */
+    private static final String SIGNATURE_INSTANCE_NAME_DEFAULT = "SHA1WithRSA";
+
+    /**
+     * keyFactoryName:KeyFactory algorithm
+     */
+    private String keyFactoryName = KEY_FACTORY_NAME_DEFAULT;
+    /**
+     * signatureInstanceName:signature algorithm.
+     */
+    private String signatureInstanceName = SIGNATURE_INSTANCE_NAME_DEFAULT;
 
     /**
      * signatureEncode:字符编码
@@ -57,4 +76,21 @@ public class RsaSignatureConfiguration {
     public void setSignatureEncode(String signatureEncode) {
         this.signatureEncode = signatureEncode;
     }
+
+    public String getKeyFactoryName() {
+        return keyFactoryName;
+    }
+
+    public void setKeyFactoryName(String keyFactoryName) {
+        this.keyFactoryName = keyFactoryName;
+    }
+
+    public String getSignatureInstanceName() {
+        return signatureInstanceName;
+    }
+
+    public void setSignatureInstanceName(String signatureInstanceName) {
+        this.signatureInstanceName = signatureInstanceName;
+    }
+
 }
