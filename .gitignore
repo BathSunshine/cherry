@@ -1,5 +1,5 @@
-##ignore this file##
-/target/ 
+﻿##ignore this file##
+target/
 .classpath
 .project
 .settings      
@@ -35,3 +35,5 @@
 Icon?  
 ehthumbs.db  
 Thumbs.db  
+*.iml
+.idea
